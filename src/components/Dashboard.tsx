@@ -68,7 +68,6 @@ export default function Dashboard() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search and Filter */}
         <div className="mb-8 space-y-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -110,7 +109,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Ideas Grid */}
         {filteredIdeas.length === 0 ? (
           <div className="text-center py-16">
             <div className="bg-white rounded-2xl p-12 max-w-md mx-auto shadow-sm border border-gray-100">

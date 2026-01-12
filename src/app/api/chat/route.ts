@@ -16,26 +16,6 @@ export async function POST(req: Request) {
     {
         role: 'system',
         content: IDEA_GENERATOR_SYSTEM_PROMPT,
-        // content: `
-        // You are a concise, practical startup strategist.
-        
-        // ONLY output JSON.
-        // Use double quotes.
-        // Format:
-        
-        // {
-        //   "title": "Idea Title",
-        //   "problem": ["bullet1", "bullet2"],
-        //   "solution": ["bullet1", "bullet2"],
-        //   "mvp": ["bullet1", "bullet2"],
-        //   "goToMarket": ["bullet1", "bullet2"],
-        //   "monetization": ["bullet1", "bullet2"],
-        //   "risksValidation": ["bullet1", "bullet2"]
-        // }
-        
-        // Do not include any extra commentary.
-        // Keep it compact and actionable.
-        // `.trim(),
     },
     {
       role: "user",
