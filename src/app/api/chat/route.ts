@@ -1,3 +1,4 @@
+import { IDEA_GENERATOR_SYSTEM_PROMPT } from '@/lib/prompt';
 import { Cencori } from 'cencori';
 
 export async function POST(req: Request) {
@@ -14,26 +15,27 @@ export async function POST(req: Request) {
   const messages: { role: "system" | "user"; content: string }[] = [
     {
         role: 'system',
-        content: `
-        You are a concise, practical startup strategist.
+        content: IDEA_GENERATOR_SYSTEM_PROMPT,
+        // content: `
+        // You are a concise, practical startup strategist.
         
-        ONLY output JSON.
-        Use double quotes.
-        Format:
+        // ONLY output JSON.
+        // Use double quotes.
+        // Format:
         
-        {
-          "title": "Idea Title",
-          "problem": ["bullet1", "bullet2"],
-          "solution": ["bullet1", "bullet2"],
-          "mvp": ["bullet1", "bullet2"],
-          "goToMarket": ["bullet1", "bullet2"],
-          "monetization": ["bullet1", "bullet2"],
-          "risksValidation": ["bullet1", "bullet2"]
-        }
+        // {
+        //   "title": "Idea Title",
+        //   "problem": ["bullet1", "bullet2"],
+        //   "solution": ["bullet1", "bullet2"],
+        //   "mvp": ["bullet1", "bullet2"],
+        //   "goToMarket": ["bullet1", "bullet2"],
+        //   "monetization": ["bullet1", "bullet2"],
+        //   "risksValidation": ["bullet1", "bullet2"]
+        // }
         
-        Do not include any extra commentary.
-        Keep it compact and actionable.
-        `.trim(),
+        // Do not include any extra commentary.
+        // Keep it compact and actionable.
+        // `.trim(),
     },
     {
       role: "user",
@@ -48,6 +50,7 @@ Tags: ${tags?.join(', ') || ''}
   const stream = cencori.ai.chatStream({
     model: 'gpt-4o',
     messages,
+    maxTokens: 4096,
   });
 
   const encoder = new TextEncoder();

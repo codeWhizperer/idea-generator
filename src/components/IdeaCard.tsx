@@ -19,7 +19,7 @@ export default function IdeaCard({ idea, onDelete }: IdeaCardProps) {
 
   return (
     <section className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 overflow-hidden group">
-      <div className="p-6">
+      <div className="p-4">
         <div className="flex items-start justify-between mb-3">
           <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
             {idea.title}

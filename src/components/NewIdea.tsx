@@ -38,37 +38,67 @@ function IdeaOutputDisplay({ ideaData, isStreaming }: any) {
         cleaned = cleaned.replace(/\n?```\s*$/, "");
       }
 
-      // Try to parse as JSON
-      return JSON.parse(cleaned.trim());
-    } catch (e) {
-      // If streaming and incomplete, return null
-      if (isStreaming) {
+      // Check if JSON looks incomplete (common signs)
+      const hasOpeningBrace = cleaned.includes("{");
+      const hasClosingBrace = cleaned.endsWith("}");
+      
+      if (hasOpeningBrace && !hasClosingBrace) {
+        console.log("JSON appears incomplete - still streaming");
         return null;
       }
-      console.error("Parse error:", e);
-      console.error("Raw output:", rawOutput);
+
+      // Try to parse as JSON
+      const parsed = JSON.parse(cleaned.trim());
+      console.log("Successfully parsed JSON");
+      return parsed;
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      
+      // If not streaming and parsing failed, show the error with raw output
+      if (!isStreaming) {
+        console.log("Stream completed but JSON is invalid");
+        console.log("Raw output:", rawOutput);
+        return { error: true, rawOutput, message: (e as Error).message };
+      }
+      
+      // Still streaming, return null to show loading
       return null;
     }
   };
 
   const idea = parseIdeaData(ideaData);
 
+  // Show clean loading state while streaming
   if (!idea) {
     return (
       <div className="bg-white border rounded-2xl p-6">
-        <div className="flex items-center gap-2 mb-4 text-gray-600">
-          {isStreaming && (
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
-          )}
-          <p className="font-medium">
-            {isStreaming
-              ? "Generating strategic plan..."
-              : "Processing response..."}
-          </p>
+        <div className="flex items-center gap-2 text-gray-600">
+          <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+          <p className="font-medium">Generating your strategic plan...</p>
         </div>
-        <pre className="text-sm text-gray-600 whitespace-pre-wrap font-mono bg-gray-50 p-4 rounded-lg overflow-auto max-h-96">
-          {ideaData}
-        </pre>
+        <p className="text-sm text-gray-500 mt-2">This may take 20-30 seconds</p>
+      </div>
+    );
+  }
+
+  // Show error state if parsing failed after streaming is done
+  if (idea.error) {
+    return (
+      <div className="bg-white border rounded-2xl p-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <p className="text-red-800 font-medium">⚠️ Response was incomplete or invalid</p>
+          <p className="text-red-600 text-sm mt-1">
+            The AI response was cut off before completing. This usually means the response exceeded the token limit.
+            Try with a shorter description or simpler idea.
+          </p>
+          <p className="text-red-600 text-sm mt-2">Error: {idea.message}</p>
+        </div>
+        <details className="cursor-pointer">
+          <summary className="text-sm text-gray-600 font-medium mb-2">Show raw output</summary>
+          <pre className="text-xs text-gray-600 whitespace-pre-wrap font-mono bg-gray-50 p-4 rounded-lg overflow-auto max-h-96 mt-2">
+            {idea.rawOutput}
+          </pre>
+        </details>
       </div>
     );
   }
@@ -256,7 +286,7 @@ export default function NewIdea() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+      <section className="max-w-4xl mx-auto px-6 py-8 space-y-6">
         <div className="bg-white shadow-sm rounded-2xl p-6 space-y-4">
           {/* Title */}
           <div>
@@ -325,11 +355,10 @@ export default function NewIdea() {
             )}
           </div>
 
-          {/* Generate button */}
           <button
             onClick={handleGenerate}
-            disabled={isGenerating || !title.trim() || !description.trim()}
-            className={`w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl transition-all shadow-md
+            disabled={isGenerating || !title.trim() || !description.trim() || status === "completed"}
+            className={`w-full inline-flex items-center justify-center cursor-pointer gap-2 px-6 py-4 rounded-xl transition-all shadow-md
     bg-gradient-to-r from-blue-600 to-purple-600 text-white
     hover:from-blue-700 hover:to-purple-700
     disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -342,7 +371,7 @@ export default function NewIdea() {
             ) : (
               <>
                 <Sparkles className="w-5 h-5" />
-                Generate AI Strategy
+                Generate  Strategy
               </>
             )}
           </button>
@@ -360,7 +389,7 @@ export default function NewIdea() {
                 {status === "completed" && (
                   <button
                     onClick={handleSave}
-                    className="w-full bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-colors"
+                    className="w-full bg-green-600 text-white px-6 py-3 rounded-xl cursor-pointer hover:bg-green-700 transition-colors"
                   >
                     Save Idea
                   </button>
@@ -376,7 +405,7 @@ export default function NewIdea() {
             )}
           </>
         )}
-      </main>
+      </section>
     </div>
   );
 }
