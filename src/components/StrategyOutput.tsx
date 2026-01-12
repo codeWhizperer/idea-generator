@@ -7,7 +7,6 @@ import Link from 'next/link';
 
 export default function StrategyOutput() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const [idea, setIdea] = useState<any>(null);
 
   useEffect(() => {
@@ -100,7 +99,6 @@ export default function StrategyOutput() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link

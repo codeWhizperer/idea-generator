@@ -1,76 +1,67 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { Plus, Search, Lightbulb } from 'lucide-react';
-import IdeaCard from './IdeaCard';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { Plus, Search, Lightbulb } from "lucide-react";
+import IdeaCard from "./IdeaCard";
+import Link from "next/link";
+import { Idea } from "../lib/types";
 
-export interface Idea {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  createdAt: string;
-  strategy?: Strategy;
-}
 
-export interface Strategy {
-  goal: string;
-  targetAudience: string;
-  keyMilestones: string[];
-  suggestedTools: string[];
-  potentialRisks: string[];
-}
 
 export default function Dashboard() {
   const [ideas, setIdeas] = useState<Idea[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string>("all");
 
   useEffect(() => {
-    const savedIdeas = localStorage.getItem('ideas');
+    const savedIdeas = localStorage.getItem("ideas");
     if (savedIdeas) {
       setIdeas(JSON.parse(savedIdeas));
     }
   }, []);
 
   const deleteIdea = (id: string) => {
-    const updatedIdeas = ideas.filter(idea => idea.id !== id);
+    const updatedIdeas = ideas.filter((idea) => idea.id !== id);
     setIdeas(updatedIdeas);
-    localStorage.setItem('ideas', JSON.stringify(updatedIdeas));
+    localStorage.setItem("ideas", JSON.stringify(updatedIdeas));
   };
 
-  const allTags = Array.from(new Set(ideas.flatMap(idea => idea.tags)));
+  const allTags = Array.from(new Set(ideas.flatMap((idea) => idea.tags)));
 
-  const filteredIdeas = ideas.filter(idea => {
-    const matchesSearch = idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  const filteredIdeas = ideas.filter((idea) => {
+    const matchesSearch =
+      idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       idea.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTag = selectedTag === 'all' || idea.tags.includes(selectedTag);
+    const matchesTag = selectedTag === "all" || idea.tags.includes(selectedTag);
     return matchesSearch && matchesTag;
   });
 
-
-
   return (
     <section className="min-h-screen">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl flex-shrink-0">
                 <Lightbulb className="w-7 h-7 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-semibold text-gray-900">Idea Generator</h1>
-                <p className="text-sm text-gray-500">AI-Powered Strategy Assistant</p>
+              <div className="flex flex-col">
+                <h1 className="text-2xl font-semibold text-gray-900">
+                  Idea Generator
+                </h1>
+                <p className="text-sm text-gray-500">
+                  AI-Powered Strategy Assistant
+                </p>
               </div>
             </div>
+
             <Link
               href="/new-idea"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 
+                   text-white rounded-lg transition-all shadow-md hover:shadow-lg 
+                   px-3 sm:px-6 py-3 sm:py-3 font-bold sm:font-semibold"
             >
-              <Plus className="w-5 h-5" />
-              New Idea
+              <Plus className="w-5 h-5 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">New Idea</span>
             </Link>
           </div>
         </div>
@@ -94,23 +85,23 @@ export default function Dashboard() {
           {allTags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => setSelectedTag('all')}
+                onClick={() => setSelectedTag("all")}
                 className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                  selectedTag === 'all'
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  selectedTag === "all"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                 }`}
               >
                 All
               </button>
-              {allTags.map(tag => (
+              {allTags.map((tag) => (
                 <button
                   key={tag}
                   onClick={() => setSelectedTag(tag)}
                   className={`px-4 py-2 rounded-lg text-sm transition-all ${
                     selectedTag === tag
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
                   {tag}
@@ -128,14 +119,16 @@ export default function Dashboard() {
                 <Lightbulb className="w-10 h-10 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {searchQuery || selectedTag !== 'all' ? 'No ideas found' : 'No ideas yet'}
+                {searchQuery || selectedTag !== "all"
+                  ? "No ideas found"
+                  : "No ideas yet"}
               </h3>
               <p className="text-gray-500 mb-6">
-                {searchQuery || selectedTag !== 'all'
-                  ? 'Try adjusting your search or filters'
-                  : 'Start by creating your first idea'}
+                {searchQuery || selectedTag !== "all"
+                  ? "Try adjusting your search or filters"
+                  : "Start by creating your first idea"}
               </p>
-              {!searchQuery && selectedTag === 'all' && (
+              {!searchQuery && selectedTag === "all" && (
                 <Link
                   href="/new-idea"
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
@@ -148,7 +141,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredIdeas.map(idea => (
+            {filteredIdeas.map((idea) => (
               <IdeaCard key={idea.id} idea={idea} onDelete={deleteIdea} />
             ))}
           </div>

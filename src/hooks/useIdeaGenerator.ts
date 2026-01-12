@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-
-export type GenerationStatus = 'idle' | 'generating' | 'completed' | 'error';
+import { GenerationStatus } from '@/lib/types';
 
 export function useIdeaGenerator() {
   const [status, setStatus] = useState<GenerationStatus>('idle');

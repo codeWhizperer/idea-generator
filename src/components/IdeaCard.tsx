@@ -1,13 +1,9 @@
 "use client";
 
 import { Eye, Trash2, Calendar } from 'lucide-react';
-import type { Idea } from './Dashboard';
+import  { IdeaCardProps } from '../lib/types';
 import Link from 'next/link';
 
-interface IdeaCardProps {
-  idea: Idea;
-  onDelete: (id: string) => void;
-}
 
 export default function IdeaCard({ idea, onDelete }: IdeaCardProps) {
   const handleDelete = (e: React.MouseEvent) => {
